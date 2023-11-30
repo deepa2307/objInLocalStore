@@ -1,33 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>booking</title>
-</head>
+<html>
 
 <body>
-    <form id='my-form'>
-        <div>
-            <label for="name">Name</label>
-            <input type="text" name="name" />
-        </div>
-        <div>
-            <label for="number">number</label>
-            <input type="text" name="number" />
-        </div>
-        <div>
-            <label for="mail">email</label>
-            <input type="text" name="email" />
-        </div>
+    <form id="registrationForm">
+        <label>Name:</label>
+        <input type="text" name="username" required>
+        <label>Email:</label>
+        <input type="email" name="emailid" required>
+        <label>Phone Number:</label>
+        <input type="tel" name="phonenumber" required>
+        <br><br>
         <button type="submit">Submit</button>
     </form>
-    <div class="item">
+    <ul id="listOfUsers"></ul>
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function (event) {
+            event.preventDefault();
 
-    </div>
+            const name = event.target.username.value;
+            const email = event.target.emailid.value;
+            const phonenumber = event.target.phonenumber.value;
 
-    <script src="obj.js"></script>
+            const userValue = `${name}-${email}-${phonenumber}`;
+            localStorage.setItem(email, userValue);
+            showUserOnScreen(email, userValue);
+
+        });
+
+        function showUserOnScreen(email, userValue) {
+            const parentElem = document.getElementById('listOfUsers');
+            const userContainer = document.createElement('div');
+            userContainer.className = 'user-container';
+            userContainer.innerHTML = `
+                <li>${userValue}</li>
+                <button type="button" class="delete" data-email="${email}">Delete</button>
+            `;
+            parentElem.appendChild(userContainer);
+
+            const deleteButtons = document.querySelectorAll('.delete');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', deleteUser);
+            });
+        }
+
+        function deleteUser(event) {
+            const emailToDelete = event.target.getAttribute('data-email');
+            localStorage.removeItem(emailToDelete);
+            const userContainer = event.target.parentElement;
+            userContainer.remove();
+        }
+    </script>
 </body>
 
 </html>
